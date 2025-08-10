@@ -1,4 +1,4 @@
 function HomePage() {
-	return <h1 className='text-3xl'>HomePage</h1>;
+	return <h1 className='text-3xl mx-auto'>HomePage</h1>;
 }
 export default HomePage;
