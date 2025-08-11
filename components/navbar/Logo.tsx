@@ -6,7 +6,7 @@ function Logo() {
 	return (
 		<Button size='icon' asChild>
 			<Link href='/'>
-				<Image src='./images/logo.svg' alt='Logo' width={100} height={100} />
+				<Image src='/images/logo.svg' alt='Logo' width={100} height={100} />
 			</Link>
 		</Button>
 	);

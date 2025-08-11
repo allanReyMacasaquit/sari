@@ -22,8 +22,8 @@ function HeroCarousel() {
 				plugins={[
 					Autoplay({
 						delay: 3000, // 2 seconds delay
-						stopOnInteraction: true,
-						stopOnMouseEnter: true,
+						stopOnInteraction: false,
+						stopOnMouseEnter: false,
 					}),
 				]}
 			>
