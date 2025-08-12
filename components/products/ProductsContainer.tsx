@@ -6,6 +6,9 @@ import Link from 'next/link';
 import { fetchAllProducts } from '@/app/utils/actions';
 import ProductsGrid from './ProductsGrid';
 import ProductsList from './ProductsList';
+import { Suspense } from 'react';
+import LoadingContainer from '../global/LoadingContainer';
+import ProductsListSkeleton from '../global/ProductsListSkeleton';
 
 type ProductsContainerProps = {
 	layout: string;
@@ -16,7 +19,7 @@ export default async function ProductsContainer({
 	layout,
 	search,
 }: ProductsContainerProps) {
-	const products = await fetchAllProducts(); // Should return Product[] if typed
+	const products = await fetchAllProducts({ search }); // Should return Product[] if typed
 	const totalProducts = products.length;
 	const searchTerm = search ? `&search=${search}` : '';
 
@@ -28,7 +31,7 @@ export default async function ProductsContainer({
 					<h4 className='font-medium text-lg'>
 						{totalProducts} product{totalProducts > 1 && 's'}
 					</h4>
-					<div className='flex gap-x-4'>
+					<div className='gap-x-4 hidden md:flex'>
 						<Button
 							variant={layout === 'grid' ? 'default' : 'ghost'}
 							size='icon'
@@ -59,9 +62,13 @@ export default async function ProductsContainer({
 						Sorry, no products matched your search...
 					</h5>
 				) : layout === 'grid' ? (
-					<ProductsGrid products={products} />
+					<Suspense fallback={<LoadingContainer />}>
+						<ProductsGrid products={products} />
+					</Suspense>
 				) : (
-					<ProductsList products={products} />
+					<Suspense fallback={<ProductsListSkeleton />}>
+						<ProductsList products={products} />
+					</Suspense>
 				)}
 			</div>
 		</>

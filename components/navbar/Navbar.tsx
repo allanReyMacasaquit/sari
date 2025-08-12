@@ -15,10 +15,10 @@ function Navbar() {
 					<NavSearch />
 				</Suspense>
 
-				<div className='flex gap-4 items-center '>
-					<CartButton />
-					<DarkMode />
+				<div className='flex gap-4 items-center justify-center pt-4 lg:pt-0 '>
 					<LinksDropdown />
+					<DarkMode />
+					<CartButton />
 				</div>
 			</Container>
 		</nav>
