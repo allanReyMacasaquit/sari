@@ -1,7 +1,6 @@
 import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
-	/* config options here */
 	devIndicators: false,
 	eslint: {
 		ignoreDuringBuilds: true,
@@ -11,6 +10,10 @@ const nextConfig: NextConfig = {
 			{
 				protocol: 'https',
 				hostname: 'images.pexels.com',
+			},
+			{
+				protocol: 'https',
+				hostname: 'img.clerk.com',
 			},
 		],
 	},
