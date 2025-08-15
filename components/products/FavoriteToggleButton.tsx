@@ -10,7 +10,11 @@ export default function FavoriteToggleButton({
 }: FavoriteToggleButtonProps) {
 	return (
 		<div className='pt-5'>
-			<Button size='icon' variant='outline' className='cursor-pointer'>
+			<Button
+				size='icon'
+				variant='outline'
+				className='cursor-pointer bg-gradient-to-br from-pink-500 to-primary border-none'
+			>
 				<FaHeart />
 				<div className='hidden'>{productId}</div>
 			</Button>
