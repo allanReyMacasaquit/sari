@@ -9,8 +9,9 @@ import {
 	TableHeader,
 	TableRow,
 } from '@/components/ui/table';
-import { fetchAdminProducts } from '@/app/utils/actions';
 import { formatCurrency } from '@/lib/utils';
+import DeleteProductButton, { IconButton } from '@/components/form/Buttons';
+import { fetchAdminProducts } from '@/app/utils/products';
 
 async function AdminProductsPage() {
 	const items = await fetchAdminProducts();
@@ -45,7 +46,12 @@ async function AdminProductsPage() {
 								<TableCell>{company}</TableCell>
 								<TableCell>{formatCurrency(price)}</TableCell>
 
-								<TableCell className='flex items-center gap-x-2'></TableCell>
+								<TableCell className='flex items-center gap-x-2'>
+									<Link href={`/admin/products/${productId}/edit`}>
+										<IconButton actionType='edit'></IconButton>
+									</Link>
+									<DeleteProductButton productId={productId} />
+								</TableCell>
 							</TableRow>
 						);
 					})}

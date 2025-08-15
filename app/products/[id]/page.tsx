@@ -4,7 +4,7 @@ import FavoriteToggleButton from '@/components/products/FavoriteToggleButton';
 import AddToCart from '@/components/single-product/AddToCart';
 import ProductRating from '@/components/single-product/ProductRating';
 import { formatCurrency } from '@/lib/utils';
-import { fetchSingleProduct } from '@/app/utils/actions';
+import { fetchSingleProduct } from '@/app/utils/products';
 
 type SingleProductProps = {
 	params: Promise<{

@@ -1,81 +1,33 @@
-import db from '@/app/utils/db';
-
-export const fetchFeaturedProducts = async () => {
-	const products = await db.product.findMany({
-		where: {
-			featured: true,
-		},
-	});
-	return products;
-};
-
-type AllProductsProps = {
-	search?: string;
-};
-
-export const fetchAllProducts = ({ search = '' }: AllProductsProps = {}) => {
-	return db.product.findMany({
-		where: {
-			OR: [
-				{ name: { contains: search, mode: 'insensitive' } },
-				{ company: { contains: search, mode: 'insensitive' } },
-			],
-		},
-		orderBy: {
-			createdAt: 'desc',
-		},
-	});
-};
+'use server';
 
 import { redirect } from 'next/navigation';
+import { revalidatePath } from 'next/cache';
 
-export const fetchSingleProduct = async (productId: string) => {
-	const product = await db.product.findUnique({
-		where: {
-			id: productId,
-		},
-	});
-	if (!product) {
-		redirect('/products');
-	}
-	return product;
-};
+import db from '@/app/utils/db';
+import { getAuthUser, getAdminUser } from '@/app/utils/auth';
+import { renderError } from '@/app/utils/errors';
+import {
+	imageSchema,
+	productSchema,
+	validateWithZodSchema,
+} from '@/app/utils/schemas';
+import { deleteImage, uploadImage } from '@/app/utils/supabase';
 
 export type actionFunction = (
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	prevState: any,
+	prevState: any, // eslint-disable-line @typescript-eslint/no-explicit-any
 	formData: FormData
 ) => Promise<{ message: string }>;
-
-import { currentUser } from '@clerk/nextjs/server';
-import { imageSchema, productSchema, validateWithZodSchema } from './schemas';
-import { uploadImage } from './supabase';
-
-const renderError = (error: unknown): { message: string } => {
-	console.log(error);
-	return {
-		message: error instanceof Error ? error.message : 'An error occurred',
-	};
-};
-
-const getAuthUser = async () => {
-	const user = await currentUser();
-	if (!user) {
-		throw new Error('You must be logged in to access this route');
-	}
-	return user;
-};
 
 export const createProductAction = async (
 	prevState: unknown,
 	formData: FormData
 ): Promise<{ message: string }> => {
-	'use server';
 	const user = await getAuthUser();
 
 	try {
 		const rawData = Object.fromEntries(formData);
 		const file = formData.get('image') as File;
+
 		const validatedFields = validateWithZodSchema(productSchema, rawData);
 		const validatedFile = validateWithZodSchema(imageSchema, { image: file });
 
@@ -94,18 +46,73 @@ export const createProductAction = async (
 	redirect('/admin/products');
 };
 
-const getAdminUser = async () => {
-	const user = await getAuthUser();
-	if (user.id !== process.env.ADMIN_USER_ID) redirect('/');
-	return user;
+export const deleteProductAction = async (prevState: { productId: string }) => {
+	const { productId } = prevState;
+	await getAdminUser();
+	try {
+		const product = await db.product.delete({
+			where: {
+				id: productId,
+			},
+		});
+		await deleteImage(product.image);
+		revalidatePath('/admin/products');
+		return { message: 'product removed' };
+	} catch (error) {
+		return renderError(error);
+	}
 };
 
-export const fetchAdminProducts = async () => {
+export const updateProductAction = async (
+	prevState: unknown,
+	formData: FormData
+) => {
 	await getAdminUser();
-	const products = await db.product.findMany({
-		orderBy: {
-			createdAt: 'desc',
-		},
-	});
-	return products;
+	try {
+		const productId = formData.get('id') as string;
+		const rawData = Object.fromEntries(formData);
+
+		const validatedFields = validateWithZodSchema(productSchema, rawData);
+
+		await db.product.update({
+			where: {
+				id: productId,
+			},
+			data: {
+				...validatedFields,
+			},
+		});
+		revalidatePath(`/admin/products/${productId}/edit`);
+		return { message: 'Product updated successfully' };
+	} catch (error) {
+		return renderError(error);
+	}
+};
+
+export const updateProductImageAction = async (
+	prevState: unknown,
+	formData: FormData
+) => {
+	await getAuthUser();
+	try {
+		const image = formData.get('image') as File;
+		const productId = formData.get('id') as string;
+		const oldImageUrl = formData.get('url') as string;
+
+		const validatedFile = validateWithZodSchema(imageSchema, { image });
+		const fullPath = await uploadImage(validatedFile.image);
+		await deleteImage(oldImageUrl);
+		await db.product.update({
+			where: {
+				id: productId,
+			},
+			data: {
+				image: fullPath,
+			},
+		});
+		revalidatePath(`/admin/products/${productId}/edit`);
+		return { message: 'Product Image updated successfully' };
+	} catch (error) {
+		return renderError(error);
+	}
 };

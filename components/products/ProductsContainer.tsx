@@ -3,12 +3,12 @@ import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 
 import Link from 'next/link';
-import { fetchAllProducts } from '@/app/utils/actions';
 import ProductsGrid from './ProductsGrid';
 import ProductsList from './ProductsList';
 import { Suspense } from 'react';
 import LoadingContainer from '../global/LoadingContainer';
 import ProductsListSkeleton from '../global/ProductsListSkeleton';
+import { fetchAllProducts } from '@/app/utils/products';
 
 type ProductsContainerProps = {
 	layout: string;
