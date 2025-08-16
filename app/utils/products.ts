@@ -11,6 +11,7 @@ type AllProductsProps = {
 export const fetchFeaturedProducts = async () => {
 	return db.product.findMany({
 		where: { featured: true },
+		orderBy: { createdAt: 'desc' },
 	});
 };
 

@@ -21,7 +21,16 @@ export const uploadImage = async (image: File) => {
 };
 
 export const deleteImage = (url: string) => {
-	const imageName = url.split('/').pop();
-	if (!imageName) throw new Error('Invalid URL');
-	return supabase.storage.from(bucket).remove([imageName]);
+	// Build bucket public URL base
+	const bucketBaseUrl = `${process.env.SUPABASE_URL}/storage/v1/object/public/${bucket}/`;
+
+	// Ensure we decode any %20, %xx encoding in file names
+	const decodedUrl = decodeURIComponent(url);
+
+	// Get only the path inside the bucket
+	const relativePath = decodedUrl.replace(bucketBaseUrl, '');
+
+	if (!relativePath) throw new Error('Invalid URL');
+
+	return supabase.storage.from(bucket).remove([relativePath]);
 };

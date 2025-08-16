@@ -10,6 +10,8 @@ import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { deleteProductAction } from '@/app/utils/actions';
+import { SignInButton } from '@clerk/nextjs';
+import { FaHeart, FaRegHeart } from 'react-icons/fa';
 
 type BtnSize = 'default' | 'lg' | 'sm';
 type ActionType = 'edit' | 'delete';
@@ -108,3 +110,39 @@ export default function DeleteProductButton({
 		/>
 	);
 }
+
+export const CardSignInButton = () => {
+	return (
+		<SignInButton mode='modal'>
+			<Button
+				type='button'
+				size='icon'
+				variant='outline'
+				className='p-2 cursor-pointer'
+				asChild
+			>
+				<FaRegHeart />
+			</Button>
+		</SignInButton>
+	);
+};
+
+export const CardSubmitButton = ({ isFavorite }: { isFavorite: boolean }) => {
+	const { pending } = useFormStatus();
+	return (
+		<Button
+			type='submit'
+			size='icon'
+			variant='outline'
+			className=' p-2 mt-5 cursor-pointer'
+		>
+			{pending ? (
+				<ReloadIcon className=' animate-spin' />
+			) : isFavorite ? (
+				<FaHeart className='text-red-500' />
+			) : (
+				<FaRegHeart />
+			)}
+		</Button>
+	);
+};
