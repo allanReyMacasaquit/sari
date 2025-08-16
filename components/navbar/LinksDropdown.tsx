@@ -1,3 +1,5 @@
+'use client';
+
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -11,11 +13,16 @@ import { Button } from '../ui/button';
 import { links } from '@/app/utils/links';
 import SignOutLink from './SignoutLink';
 import UserIcon from './UserIcon';
-import { SignedIn, SignedOut, SignInButton, SignUpButton } from '@clerk/nextjs';
-import { auth } from '@clerk/nextjs/server';
+import {
+	SignedIn,
+	SignedOut,
+	SignInButton,
+	SignUpButton,
+	useAuth,
+} from '@clerk/nextjs';
 
-async function LinksDropdown() {
-	const { userId } = await auth();
+function LinksDropdown() {
+	const { userId } = useAuth();
 	const isAdmin = userId === process.env.ADMIN_USER_ID;
 	return (
 		<DropdownMenu>
