@@ -5,6 +5,7 @@ import AddToCart from '@/components/single-product/AddToCart';
 import ProductRating from '@/components/single-product/ProductRating';
 import { formatCurrency } from '@/lib/utils';
 import { fetchSingleProduct } from '@/app/utils/products';
+import ShareButton from '@/components/single-product/ShareButton';
 
 type SingleProductProps = {
 	params: Promise<{
@@ -36,6 +37,7 @@ async function SingleProductPage({ params }: SingleProductProps) {
 					<div className='flex gap-x-8 items-center'>
 						<h1 className='capitalize text-3xl font-bold'>{name}</h1>
 						<FavoriteToggleButton productId={id} />
+						<ShareButton name={product.name} productId={id} />
 					</div>
 					<ProductRating productId={id} />
 					<h4 className='text-xl mt-2'>{company}</h4>
