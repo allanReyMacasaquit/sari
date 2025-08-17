@@ -74,7 +74,7 @@ export const IconButton = ({
 
 	return (
 		<Button
-			type='button' // Changed from submit to button
+			type='submit'
 			size='icon'
 			variant='link'
 			className='p-2 cursor-pointer'
@@ -134,14 +134,14 @@ export const CardSubmitButton = ({ isFavorite }: { isFavorite: boolean }) => {
 			type='submit'
 			size='icon'
 			variant='outline'
-			className=' p-2 mt-5 cursor-pointer'
+			className='cursor-pointer rounded-full'
 		>
 			{pending ? (
-				<ReloadIcon className=' animate-spin' />
+				<ReloadIcon className='animate-spin size-5' />
 			) : isFavorite ? (
-				<FaHeart className='text-red-500' />
+				<FaHeart className='text-red-500 size-5' />
 			) : (
-				<FaRegHeart />
+				<FaRegHeart className='size-5' />
 			)}
 		</Button>
 	);

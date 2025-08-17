@@ -6,6 +6,10 @@ import ProductRating from '@/components/single-product/ProductRating';
 import { formatCurrency } from '@/lib/utils';
 import { fetchSingleProduct } from '@/app/utils/products';
 import ShareButton from '@/components/single-product/ShareButton';
+import ProductReviews from '@/components/reviews/ProductReviews';
+import SubmitReview from '@/components/reviews/SubmitReview';
+import { auth } from '@clerk/nextjs/server';
+import { findExistingReview } from '@/app/utils/reviews';
 
 type SingleProductProps = {
 	params: Promise<{
@@ -17,6 +21,10 @@ async function SingleProductPage({ params }: SingleProductProps) {
 	const product = await fetchSingleProduct(id);
 	const { name, image, company, description, price } = product;
 	const dollarsAmount = formatCurrency(price);
+
+	const { userId } = await auth();
+	const reviewDoesNotExist =
+		userId && !(await findExistingReview(userId, product.id));
 	return (
 		<section>
 			<BreadCrumbs name={product.name} />
@@ -39,6 +47,10 @@ async function SingleProductPage({ params }: SingleProductProps) {
 						<FavoriteToggleButton productId={id} />
 						<ShareButton name={product.name} productId={id} />
 					</div>
+
+					<ProductReviews productId={id} />
+					{reviewDoesNotExist && <SubmitReview productId={id} />}
+
 					<ProductRating productId={id} />
 					<h4 className='text-xl mt-2'>{company}</h4>
 					<p className='mt-3 text-md bg-muted inline-block p-2 rounded-md'>

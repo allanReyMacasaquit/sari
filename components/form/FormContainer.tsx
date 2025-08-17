@@ -1,7 +1,8 @@
 'use client';
 
 import { actionFunction } from '@/app/utils/actions';
-import { useActionState, useEffect } from 'react';
+import { useActionState } from 'react';
+import { useEffect } from 'react';
 import { toast } from 'sonner';
 
 const initialState = {
@@ -22,6 +23,8 @@ function FormContainer({
 			toast(state.message);
 		}
 	}, [state]);
+
 	return <form action={formAction}>{children}</form>;
 }
+
 export default FormContainer;
