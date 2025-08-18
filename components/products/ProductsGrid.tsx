@@ -40,7 +40,7 @@ export default function ProductsGrid({ products }: ProductsGridProps) {
 								</CardContent>
 							</Card>
 						</Link>
-						<div className='absolute top-7 right-7 z-5'>
+						<div className='absolute top-12 right-7 z-5'>
 							<FavoriteToggleButton productId={productId} />
 						</div>
 					</article>
